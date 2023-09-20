@@ -21,4 +21,5 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         ls -l
-        stat $(git ls-files '*.py' | tr -d "[:blank:]")
+        ls -l show_EnhancedRouteTable/
+        pylint $(git ls-files '*.py' | tr -d "[:blank:]")
