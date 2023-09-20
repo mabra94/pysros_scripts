@@ -20,6 +20,4 @@ jobs:
         pip install pylint pysros
     - name: Analysing the code with pylint
       run: |
-        ls -l
-        ls -l show_EnhancedRouteTable/
-        pylint $(git ls-files '*.py' | tr -d "[:blank:]")
+        pylint $(git ls-files '*.py')
