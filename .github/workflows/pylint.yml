@@ -20,4 +20,5 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
+        ls -l
         pylint $(git ls-files '*.py' | tr -d "[:blank:]")
