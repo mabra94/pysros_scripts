@@ -1,6 +1,6 @@
 ## Disclaimer
 
-This is a private repo with privately developed pySROS based scripts based on publicly available content such as:
+This is a repo with privately developed pySROS based scripts based on publicly available content such as:
 
 - https://network.developer.nokia.com/
 - https://documentation.nokia.com/sr/23-7-2/index.html
