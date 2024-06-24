@@ -1,0 +1,19 @@
+hosts:
+  clab-nsp_topo_new1-r131:
+    ansible_host: 10.0.1.131
+#  clab-nsp_topo_new1-r132:   # commented out as r132 is currently in classic mode
+#    ansible_host: 10.0.1.132
+  clab-nsp_topo_new1-r133:
+    ansible_host: 10.0.1.133
+  clab-nsp_topo_new1-r134:
+    ansible_host: 10.0.1.134
+  clab-nsp_topo_new1-r135:
+    ansible_host: 10.0.1.135
+  clab-nsp_topo_new1-r136:
+    ansible_host: 10.0.1.136
+  clab-nsp_topo_new1-r137:
+    ansible_host: 10.0.1.137
+  clab-nsp_topo_new1-r138:
+    ansible_host: 10.0.1.138
+
+

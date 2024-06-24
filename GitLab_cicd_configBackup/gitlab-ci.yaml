@@ -1,0 +1,77 @@
+# This file is a template, and might need editing before it works on your project.
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/python/tags/
+image: python:3.11.3
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  pySROS_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pysros/cache"
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+    - .cache/pysros/cache
+
+stages:
+  - inventory
+  - backup
+
+before_script:
+  - python -V  # Print out python version for debugging
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  - mkdir -p $pySROS_CACHE_DIR
+  - mkdir -p ~/.pysros # Create pysros cache directory
+  - ln -sf $pySROS_CACHE_DIR ~/.pysros/cache # Create symbolic link to allow pySROS cache to be preserved
+  - git config --global user.email "$GITLAB_USER_EMAIL"
+  - git config --global user.name "$GITLAB_USER_ID"
+
+inventory-job:
+  stage: inventory
+  script:
+    - git checkout "$CI_COMMIT_REF_NAME"
+    - pip install -r requirements.txt
+    - python inventory.py
+    - git add clab*
+    - >
+      if ! git diff-index --quiet HEAD; then
+        git commit -m "push back from pipeline"
+        git remote set-url --push origin "https://$TOKEN_NAME:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git"
+        git push --set-upstream origin $CI_COMMIT_BRANCH -o ci.skip
+      else
+        echo "No changes applied to the NEs"
+      fi
+  rules:
+    - changes:
+        - inventory.yaml
+  tags:
+    - comlab8
+
+backup-job:
+  stage: backup
+  variables:
+    GIT_STRATEGY: clone
+  script:
+    - git checkout "$CI_COMMIT_REF_NAME"
+    - pip install -r requirements.txt
+    - python backup.py
+    - git add clab*
+    - >
+      if ! git diff-index --quiet HEAD; then
+        git commit -m "push back from pipeline"
+        git remote set-url --push origin "https://$TOKEN_NAME:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git"
+        git push --set-upstream origin $CI_COMMIT_BRANCH -o ci.skip
+      else
+        echo "No changes applied to the NEs"
+      fi
+  tags:
+    - comlab8
